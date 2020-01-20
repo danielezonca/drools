@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.lang.types;
 
+/*
+TODO {gcardosi} restore/replace them
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,20 +30,16 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
+ */
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
-import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.UnaryTest;
 
 public enum BuiltInType implements SimpleType {
 
@@ -76,16 +74,13 @@ public enum BuiltInType implements SimpleType {
     }
 
     public Object fromString(String value) {
-        return FEELStringMarshaller.INSTANCE.unmarshall( this, value );
+        // TODO {gcardosi} correct implementation
+        return value;
     }
 
     public String toString(Object value) {
-        return FEELStringMarshaller.INSTANCE.marshall( value );
-    }
-    
-    public static <T> Function<FEELEvent, T> justNull() {
-        // TODO we should add the EventListener here somehow?
-        return t -> null;
+        // TODO {gcardosi} correct implementation
+        return value.toString();
     }
 
     public Collection<BuiltInTypeSymbol> getSymbols() {
@@ -99,7 +94,7 @@ public enum BuiltInType implements SimpleType {
                " }";
     }
 
-    public static Type determineTypeFromName( String name ) {
+    public static Type determineTypeFromName(String name ) {
         if( name == null ) {
             return UNKNOWN;
         }
@@ -120,34 +115,35 @@ public enum BuiltInType implements SimpleType {
             return NUMBER;
         } else if( o instanceof String ) {
             return STRING;
-        } else if( o instanceof LocalDate ) {
+        } else if( o instanceof Date ) {
             return DATE;
-        } else if( o instanceof LocalTime || o instanceof OffsetTime ) {
-            return TIME;
-        } else if( o instanceof ZonedDateTime || o instanceof OffsetDateTime || o instanceof LocalDateTime ) {
-            return DATE_TIME;
-        } else if (o instanceof Duration || o instanceof ChronoPeriod) {
-            return DURATION;
+//        } else if( o instanceof LocalTime || o instanceof OffsetTime ) {
+//            return TIME;
+//        } else if( o instanceof ZonedDateTime || o instanceof OffsetDateTime || o instanceof LocalDateTime ) {
+//            return DATE_TIME;
+//        } else if (o instanceof Duration || o instanceof ChronoPeriod) {
+//            return DURATION;
         } else if( o instanceof Boolean ) {
             return BOOLEAN;
+        /* TODO {gcardosi} correct implementation
         } else if( o instanceof UnaryTest ) {
             return UNARY_TEST;
         } else if( o instanceof Range ) {
             return RANGE;
         } else if( o instanceof FEELFunction ) {
-            return FUNCTION;
+            return FUNCTION;*/
         } else if( o instanceof List ) {
             return LIST;
         } else if( o instanceof Map ) {
             return CONTEXT;
-        } else if (o instanceof TemporalAccessor) {
-            // last, determine if it's a FEEL time with TZ
-            TemporalAccessor ta = (TemporalAccessor) o;
-            if (!(ta instanceof Temporal) && ta.isSupported(ChronoField.HOUR_OF_DAY) 
-                    && ta.isSupported(ChronoField.MINUTE_OF_HOUR) && ta.isSupported(ChronoField.SECOND_OF_MINUTE) 
-                    && ta.query(TemporalQueries.zone()) != null) {
-                return TIME;
-            }
+//        } else if (o instanceof TemporalAccessor) {
+//            // last, determine if it's a FEEL time with TZ
+//            TemporalAccessor ta = (TemporalAccessor) o;
+//            if (!(ta instanceof Temporal) && ta.isSupported(ChronoField.HOUR_OF_DAY)
+//                    && ta.isSupported(ChronoField.MINUTE_OF_HOUR) && ta.isSupported(ChronoField.SECOND_OF_MINUTE)
+//                    && ta.query(TemporalQueries.zone()) != null) {
+//                return TIME;
+//            }
         }
         return UNKNOWN;
     }
